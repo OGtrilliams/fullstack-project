@@ -1,7 +1,7 @@
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 
-export const protect = async (req, res) => {
+export const protect = async (req, res, next) => {
   try {
     let token = req.headers.authorization;
 
@@ -9,12 +9,13 @@ export const protect = async (req, res) => {
       token = token.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.id).select("-password");
-      next();
+
+      next(); // <--- now works
     } else {
       res.status(401).json({ message: "Not authorized, no token found." });
     }
   } catch (error) {
-    res.status(401).json({ message: "Token failed" });
-    error: error.message;
+    console.error(error);
+    res.status(401).json({ message: "Token failed", error: error.message });
   }
 };
