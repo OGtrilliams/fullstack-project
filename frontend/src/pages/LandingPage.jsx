@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
 import Login from "../components/Login";
 import Signup from "../components/Signup";
+import { profileInfoCard } from "../components/Cards.jsx";
 
 const LandingPage = () => {
   const { user } = useContext(UserContext);
@@ -57,7 +58,7 @@ const LandingPage = () => {
           {/* desktop navigation */}
           <div className="hidden md:flex items-center">
             {user ? (
-              <ProfileInfoCard />
+              <profileInfoCard />
             ) : (
               <button
                 className={landingPageStyles.desktopAuthButton}

@@ -3,12 +3,14 @@ import { authStyles as styles } from "../assets/dummystyle";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import { validateEmail } from "../utils/helper";
+import axiosInstance from "../utils/axiosInstance";
 import { Input } from "./Inputs";
 
 const Signup = ({ setCurrentPage }) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [error, setError] = useState(null);
   const { updateUser } = useContext(UserContext);
   const navigate = useNavigate();
@@ -30,7 +32,7 @@ const Signup = ({ setCurrentPage }) => {
     setError("");
 
     try {
-      const response = await axiosInstance.post(API_PATHS_AUTH.REGISTER, {
+      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
         name: fullName,
         email,
         password,
@@ -42,7 +44,7 @@ const Signup = ({ setCurrentPage }) => {
         navigate("/dashboard");
       }
     } catch (error) {
-      console.error(
+      setError(
         error.response?.data?.message ||
           "Something went wrong. Please try again."
       );
@@ -56,8 +58,9 @@ const Signup = ({ setCurrentPage }) => {
           Join thousands of Professionals today
         </p>
       </div>
+
       {/* form */}
-      <form onSubmit={handleSignup} className={styles.signupForm}>
+      <form onSubmit={handleSignUp} className={styles.signupForm}>
         <Input
           value={fullName}
           onChange={({ target }) => setFullName(target.value)}
@@ -84,7 +87,9 @@ const Signup = ({ setCurrentPage }) => {
         <button type="submit" className={styles.signupSubmit}>
           Create Account
         </button>
+
         {/* footer */}
+
         <p className={styles.switchText}>
           Already have an account?{" "}
           <button
@@ -92,7 +97,7 @@ const Signup = ({ setCurrentPage }) => {
             onClick={() => setCurrentPage("login")}
             className={styles.signupSwitchButton}
           >
-            Sign <input type="checkbox" name="" id="" />
+            Sign in
           </button>
         </p>
       </form>
