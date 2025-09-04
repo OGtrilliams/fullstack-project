@@ -7,6 +7,9 @@ import { Download, Palette, Trash } from "lucide-react";
 import { API_PATHS } from "../utils/apiPaths";
 import axiosInstance from "../utils/axiosInstance";
 import toast from "react-hot-toast";
+import { fixTailwindColors } from "../utils/colors";
+
+import html2pdf from "html2pdf.js";
 
 // resize observer hook
 
@@ -507,6 +510,90 @@ const EditResume = () => {
         [section]: updatedArray,
       };
     });
+  };
+
+  // fetch resume details using backend URL by ID
+  const fetchResumeDetailsById = async () => {
+    try {
+      const response = await axiosInstance.get(
+        API_PATHS.RESUME.GET_BY_ID(resumeId)
+      );
+
+      if (response.data && response.data.profileInfo) {
+        const resumeInfo = response.data;
+
+        setResumeData((prevState) => ({
+          ...prevState,
+          title: resumeInfo?.title || "Untitled",
+          template: resumeInfo?.template || prevState?.template,
+          profileInfo: resumeInfo?.profileInfo || prevState?.profileInfo,
+          contactInfo: resumeInfo?.contactInfo || prevState?.contactInfo,
+          workExperience:
+            resumeInfo?.workExperience || prevState?.workExperience,
+          education: resumeInfo?.education || prevState?.education,
+          skills: resumeInfo?.skills || prevState?.skills,
+          projects: resumeInfo?.projects || prevState?.projects,
+          certifications:
+            resumeInfo?.certifications || prevState?.certifications,
+          languages: resumeInfo?.languages || prevState?.languages,
+          interests: resumeInfo?.interests || prevState?.interests,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching resume:", error);
+      toast.error("Failed to load resume data");
+    }
+  };
+
+  const uploadResumeImages = async () => {
+    try {
+      setIsLoading(true);
+
+      const thumbnailElement = thumbnailRef.current;
+      if (!thumbnailElement) {
+        throw new Error("Thumbnail element not found");
+      }
+
+      const fixedThumbnail = fixTailwindColors(thumbnailElement);
+
+      const thumbnailCanvas = await html2canvas(fixedThumbnail, {
+        scale: 0.5,
+        backgroundColor: "#FFFFFF",
+        logging: false,
+      });
+
+      document.body.removeChild(fixedThumbnail);
+
+      // store the imamge resume in .png format
+
+      const thumbnailDataUrl = thumbnailCanvas.toDataURL("image/png");
+      const thumbnailFile = dataURLtoFile(
+        thumbnailDataUrl,
+        `thumbnail-${resumeId}.png`
+      );
+
+      const formData = new FormData();
+      formData.append("thumbnail", thumbnailFile);
+
+      const uploadResponse = await axiosInstance.put(
+        API_PATHS.RESUME.UPLOAD_IMAGES(resumeId),
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      const { thumbnailLink } = uploadResponse.data;
+      await updateResumeDetails(thumbnailLink);
+
+      toast.success("Resume Updated Successfully");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error Uploading Images:", error);
+      toast.error("Failed to upload images");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   //   delete function to delete any resume
