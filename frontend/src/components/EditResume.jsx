@@ -5,7 +5,7 @@ import { TitleInput } from "./Inputs";
 import { useNavigate, useParams } from "react-router-dom";
 import { Download, Palette, Trash } from "lucide-react";
 import { API_PATHS } from "../utils/apiPaths";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "../utils/axiosInstance.js";
 import toast from "react-hot-toast";
 import { fixTailwindColors } from "../utils/colors";
 
@@ -518,7 +518,7 @@ const EditResume = () => {
       const response = await axiosInstance.get(
         API_PATHS.RESUME.GET_BY_ID(resumeId)
       );
-      console.log(response);
+      console.log();
 
       if (response.data && response.data.profileInfo) {
         const resumeInfo = response.data;
