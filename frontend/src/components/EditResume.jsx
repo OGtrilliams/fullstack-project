@@ -518,6 +518,7 @@ const EditResume = () => {
       const response = await axiosInstance.get(
         API_PATHS.RESUME.GET_BY_ID(resumeId)
       );
+      console.log(response);
 
       if (response.data && response.data.profileInfo) {
         const resumeInfo = response.data;
