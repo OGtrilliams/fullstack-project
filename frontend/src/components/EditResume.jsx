@@ -1,8 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import DashboardLayout from "./DashboardLayout";
-import { buttonStyles, containerStyles } from "../assets/dummystyle";
+import {
+  buttonStyles,
+  containerStyles,
+  statusStyles,
+} from "../assets/dummystyle";
 import { TitleInput } from "./Inputs";
-import { useNavigate, useParams } from "react-router-dom";
+import { redirect, useNavigate, useParams } from "react-router-dom";
 import { Download, Palette, Trash } from "lucide-react";
 import { API_PATHS } from "../utils/apiPaths";
 import axiosInstance from "../utils/axiosInstance.js";
@@ -10,6 +14,18 @@ import toast from "react-hot-toast";
 import { fixTailwindColors } from "../utils/colors";
 
 import html2pdf from "html2pdf.js";
+import StepProgress from "./StepProgress.jsx";
+import { AlertCircle, ArrowLeft } from "react-feather";
+import {
+  AdditionalInfoForm,
+  CertificationInfoForm,
+  ContactInfoForm,
+  EducationDetailsForm,
+  ProfileInfoForm,
+  ProjectDetailForm,
+  SkillsInfoForm,
+  WorkExperienceForm,
+} from "./Forms.jsx";
 
 // resize observer hook
 
@@ -513,33 +529,37 @@ const EditResume = () => {
   };
 
   // fetch resume details using backend URL by ID
+
   const fetchResumeDetailsById = async () => {
     try {
+      console.log("Fetching resume at:", API_PATHS.RESUME.GET_BY_ID(resumeId));
+
       const response = await axiosInstance.get(
         API_PATHS.RESUME.GET_BY_ID(resumeId)
       );
-      console.log();
 
       if (response.data && response.data.profileInfo) {
         const resumeInfo = response.data;
-
-        setResumeData((prevState) => ({
-          ...prevState,
-          title: resumeInfo?.title || "Untitled",
-          template: resumeInfo?.template || prevState?.template,
-          profileInfo: resumeInfo?.profileInfo || prevState?.profileInfo,
-          contactInfo: resumeInfo?.contactInfo || prevState?.contactInfo,
-          workExperience:
-            resumeInfo?.workExperience || prevState?.workExperience,
-          education: resumeInfo?.education || prevState?.education,
-          skills: resumeInfo?.skills || prevState?.skills,
-          projects: resumeInfo?.projects || prevState?.projects,
-          certifications:
-            resumeInfo?.certifications || prevState?.certifications,
-          languages: resumeInfo?.languages || prevState?.languages,
-          interests: resumeInfo?.interests || prevState?.interests,
-        }));
+      } else if (!response.data) {
+        console.warn("No response data received");
+        return;
       }
+      const resumeInfo = response.data;
+
+      setResumeData((prevState) => ({
+        ...prevState,
+        title: resumeInfo?.title || "Untitled",
+        template: resumeInfo?.template || prevState?.template,
+        profileInfo: resumeInfo?.profileInfo || prevState?.profileInfo,
+        contactInfo: resumeInfo?.contactInfo || prevState?.contactInfo,
+        workExperience: resumeInfo?.workExperience || prevState?.workExperience,
+        education: resumeInfo?.education || prevState?.education,
+        skills: resumeInfo?.skills || prevState?.skills,
+        projects: resumeInfo?.projects || prevState?.projects,
+        certifications: resumeInfo?.certifications || prevState?.certifications,
+        languages: resumeInfo?.languages || prevState?.languages,
+        interests: resumeInfo?.interests || prevState?.interests,
+      }));
     } catch (error) {
       console.error("Error fetching resume:", error);
       toast.error("Failed to load resume data");
@@ -719,18 +739,11 @@ const EditResume = () => {
 
           <div className="flex flex-wrap items-center gapp-3">
             <button
-              onClick={() => setOpenThemeSelector(true)}
+              onClick={() => setOpenThemeSelector(theme)}
               className={buttonStyles.theme}
             >
               <Palette size={16} />
               <span className="text-sm">Theme</span>
-            </button>
-            <button
-              onClick={handleDeleteResume}
-              className={buttonStyles.delete}
-              disabled={isLoading}
-            >
-              <Trash size={16} /> Delete
             </button>
 
             <button
@@ -740,10 +753,42 @@ const EditResume = () => {
               <Download size={16} />
               <span className="text-sm">Preview</span>
             </button>
+            <button
+              onClick={handleDeleteResume}
+              className={buttonStyles.delete}
+              disabled={isLoading}
+            >
+              <Trash size={16} /> Delete
+            </button>
           </div>
         </div>
 
         {/* step progress */}
+
+        <div className={containerStyles.grid}>
+          <div className={containerStyles.formContainer}>
+            <StepProgress progress={progress} />
+            {renderForm()}
+            <div className="p-4 sm:p-6">
+              {errorMsg && (
+                <div className={statusStyles.error}>
+                  <AlertCircle size={16} />
+                  {errorMsg}
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center justify-end gap-3">
+                <button
+                  className={buttonStyles.back}
+                  onClick={goBack}
+                  disabled={isLoading}
+                >
+                  <ArrowLeft size={16} /> Back
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );

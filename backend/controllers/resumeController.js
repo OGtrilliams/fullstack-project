@@ -110,8 +110,8 @@ export const getResumeById = async (req, res) => {
     });
     if (!resume) {
       return res.status(404).json({ message: "Resume not found." });
-      res.json(resume);
     }
+    res.json(resume);
   } catch (error) {
     res
       .status(500)
@@ -138,7 +138,7 @@ export const updateResume = async (req, res) => {
 
     // save updated Resume
     const saveResume = await resume.save();
-    res.json(savedResume);
+    res.json(saveResume);
   } catch (error) {
     res
       .status(500)
@@ -166,7 +166,7 @@ export const deleteResume = async (req, res) => {
     //   delete thumbnail
     if (resume.thumbnailLink) {
       const oldThumbnail = path.join(
-        uploadsFolder,
+        uploadFolder,
         path.basename(resume.thumbnailLink)
       );
       if (fs.existsSync(oldThumbnail)) {
@@ -175,7 +175,7 @@ export const deleteResume = async (req, res) => {
     }
     if (resume.profileInfo?.profilePreviewUrl) {
       const oldProfile = path.join(
-        uploadsFolder,
+        uploadFolder,
         path.basename(resume.profileInfo.profilePreviewUrl)
       );
       if (fs.existsSync(oldProfile)) {

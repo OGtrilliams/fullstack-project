@@ -17,11 +17,11 @@ import {
 
 // AdditionalInfoForm Component
 export const AdditionalInfoForm = ({
-  languages,
-  interests,
-  updateArrayItem,
-  addArrayItem,
-  removeArrayItem,
+  languages = [],
+  interests = [],
+  updateArrayItem = () => {},
+  addArrayItem = () => {},
+  removeArrayItem = () => {},
 }) => {
   return (
     <div className={additionalInfoStyles.container}>
@@ -125,7 +125,7 @@ export const AdditionalInfoForm = ({
 
 // CertificationInfoForm Component
 export const CertificationInfoForm = ({
-  certifications,
+  certifications = [],
   updateArrayItem,
   addArrayItem,
   removeArrayItem,
@@ -197,7 +197,7 @@ export const CertificationInfoForm = ({
 };
 
 // ContactInfoForm Component
-export const ContactInfoForm = ({ contactInfo, updateSection }) => {
+export const ContactInfoForm = ({ contactInfo = {}, updateSection = {} }) => {
   return (
     <div className={contactInfoStyles.container}>
       <h2 className={contactInfoStyles.heading}>Contact Information</h2>
@@ -256,7 +256,7 @@ export const ContactInfoForm = ({ contactInfo, updateSection }) => {
 
 // EducationDetailsForm Component
 export const EducationDetailsForm = ({
-  educationInfo,
+  educationInfo = [],
   updateArrayItem,
   addArrayItem,
   removeArrayItem,
@@ -335,12 +335,12 @@ export const EducationDetailsForm = ({
   );
 };
 
-// ProfileInfoForm Component
-export const ProfileInfoForm = ({ profileData, updateSection }) => {
+// ProfileInfoForm Component BROKEN
+export const ProfileInfoForm = ({ profileData = {}, updateSection }) => {
   return (
     <div className={profileInfoStyles.container}>
       <h2 className={profileInfoStyles.heading}>Personal Information</h2>
-
+      console.log(profileData, updateSection);
       <div className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Input
@@ -379,7 +379,7 @@ export const ProfileInfoForm = ({ profileData, updateSection }) => {
 
 // ProjectDetailForm Component
 export const ProjectDetailForm = ({
-  projectInfo,
+  projectInfo = [],
   updateArrayItem,
   addArrayItem,
   removeArrayItem,
@@ -470,7 +470,7 @@ export const ProjectDetailForm = ({
 
 // SkillsInfoForm Component
 export const SkillsInfoForm = ({
-  skillsInfo,
+  skillsInfo = [],
   updateArrayItem,
   addArrayItem,
   removeArrayItem,
@@ -541,7 +541,7 @@ export const SkillsInfoForm = ({
 
 // WorkExperienceForm Component
 export const WorkExperienceForm = ({
-  workExperience,
+  workExperience = [],
   updateArrayItem,
   addArrayItem,
   removeArrayItem,

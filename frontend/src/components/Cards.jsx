@@ -247,7 +247,9 @@ export const TemplateCard = ({ thumbnailImg, isSelected, onSelect }) => {
               </div>
             </div>
           )}
-          // hover effect
+
+          {/* hover effect */}
+
           <div className="absolute inset-0 bg-gradient-to-t from-violet-100/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
       ) : (

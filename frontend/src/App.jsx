@@ -5,6 +5,7 @@ import UserProvider from "./context/UserContext";
 import Dashboard from "./pages/Dashboard";
 import EditResume from "./components/EditResume";
 import { Toaster } from "react-hot-toast";
+import TestPage from "./pages/TestPage.jsx";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/resume/:resumeId" element={<EditResume />} />
+        <Route path="/forms" element={<TestPage />} />
       </Routes>
 
       <Toaster
